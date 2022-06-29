@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nonces",
+  "info": {
+    "singularName": "nonce",
+    "pluralName": "nonces",
+    "displayName": "Nonce",
+    "name": "nonce"
+  },
+  "options": {
+    "increments": false,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "wallet": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "private": true,
+      "configurable": false
+    },
+    "nonce": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "private": true,
+      "configurable": false
+    },
+    "issuedDate": {
+      "type": "datetime",
+      "configurable": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "configurable": false
+    }
+  }
+}
