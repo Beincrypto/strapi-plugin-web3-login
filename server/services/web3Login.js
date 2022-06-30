@@ -19,6 +19,7 @@ module.exports = (
   return {
 
     async initialize() {
+      console.log('Strapi plugin Web3 Login initialized!');
     },
 
     settings() {
