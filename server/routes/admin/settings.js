@@ -1,14 +1,8 @@
 module.exports = [
   {
     method: 'GET',
-    path: '/',
-    handler: 'web3-login.index',
-    config: {policies: []}
-  },
-  {
-    method: 'GET',
     path: '/settings',
-    handler: 'web3-login.getSettings',
+    handler: 'web3Login.getSettings',
     config: {
       policies: [
         {
@@ -23,7 +17,7 @@ module.exports = [
   {
     method: 'PUT',
     path: '/settings',
-    handler: 'web3-login.updateSettings',
+    handler: 'web3Login.updateSettings',
     config: {
       policies: [
         {

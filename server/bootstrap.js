@@ -55,5 +55,6 @@ module.exports = async (
   await strapi.admin.services.permission.actionProvider.registerMany(
     web3LoginActions.actions
   );
-  // await strapi.plugin('users-permissions').service('web3-login').initialize()
+  
+  await strapi.plugin('web3-login').service('web3Login').initialize();
 };
