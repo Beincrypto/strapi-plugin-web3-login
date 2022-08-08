@@ -1,11 +1,12 @@
 'use strict';
 /**
- * Auth.js controller
+ * auth.js controller
  *
  * @description: A set of functions called "actions" for managing `Auth`.
  */
 
 const {sanitize} = require('@strapi/utils');
+const {ethers} = require("ethers");
 
 /* eslint-disable no-useless-escape */
 const _ = require('lodash');
@@ -89,7 +90,7 @@ module.exports = {
 
   async sendNonce(ctx) {
     const {web3Login} = strapi.plugins['web3-login'].services;
-    const {wallet} = ctx.query;
+    const {wallet} = ctx.params;
 
     const isEnabled = await web3Login.isEnabled();
 
@@ -97,7 +98,7 @@ module.exports = {
       return ctx.badRequest('plugin.disabled');
     }
 
-    const isAddress = true; // TODO ethers
+    const isAddress = ethers.utils.isAddress(wallet);
 
     if (!wallet || !isAddress) {
       return ctx.badRequest('wrong.wallet');

@@ -76,17 +76,17 @@ module.exports = (
     async createNonce(wallet) {
       const settings = await this.settings();
       // TODO: maybe? const {nonceLength = 20} = settings;
-      const noncesService = strapi.query('plugin::web3-login.nonce');
       const nonceToken = nanoid();
 
-      let nonce = noncesService.findOne({where: {wallet}});
-      if (nonce) {
+      let nonce;
+      let found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
+      if (found.length === 1) {
         const nonceData = {
           nonce: nonceToken,
           issuedDate: new Date(),
           active: true
         };
-        noncesService.update({where: {wallet}, data: nonceData});
+        nonce = await strapi.entityService.update('plugin::web3-login.nonce', found[0].id, {data: nonceData});
       } else {
         const nonceData = {
           wallet,
@@ -94,14 +94,18 @@ module.exports = (
           issuedDate: new Date(),
           active: true
         };
-        nonce = noncesService.create({data: nonceData})
+        nonce = await strapi.entityService.create('plugin::web3-login.nonce', {data: nonceData})
       }
       return nonce;
     },
 
-    fetchNonce(wallet) {
-      const noncesService = strapi.query('plugin::web3-login.nonce');
-      return noncesService.findOne({where: {wallet}});
+    async fetchNonce(wallet) {
+      let nonce;
+      let found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
+      if (found.length === 1) {
+        nonce = found[0];
+      }
+      return nonce;
     },
 
     async isNonceExpired(nonce) {
@@ -112,10 +116,7 @@ module.exports = (
     },
 
     async deactivateNonce(nonce) {
-      const noncesService = strapi.query('plugin::web3-login.nonce');
-      await noncesService.update(
-        {where: {id: nonce.id}, data: {active: false}}
-      );
+      await strapi.entityService.update('plugin::web3-login.nonce', nonce.id, {data: {active: false}});
     },
 
     async fetchUser(data) {

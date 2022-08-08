@@ -1,6 +1,6 @@
 module.exports = [
   {
-    method: 'GET',
+    method: 'POST',
     path: '/login',
     handler: 'auth.login',
     config: {
@@ -8,8 +8,8 @@ module.exports = [
     }
   },
   {
-    method: 'POST',
-    path: '/nonce',
+    method: 'GET',
+    path: '/nonce/:wallet',
     handler: 'auth.sendNonce',
     config: {
       auth: false
