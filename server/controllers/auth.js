@@ -32,10 +32,11 @@ module.exports = {
       return ctx.badRequest('wrong.wallet');
     }
 
+    const lcWallet = wallet.toLowerCase();
     if (_.isEmpty(signature)) {
       return ctx.badRequest('signature.invalid');
     }
-    const nonce = await web3Login.fetchNonce(wallet);
+    const nonce = await web3Login.fetchNonce(lcWallet);
 
     if (!nonce || !nonce.active) {
       return ctx.badRequest('nonce.invalid');
@@ -72,13 +73,13 @@ ${nonce.nonce}`;
     }
     console.log('signerAddress', signerAddress)
     
-    if (wallet.toLowerCase() !== signerAddress.toLowerCase()) {
+    if (lcWallet !== signerAddress.toLowerCase()) {
       return ctx.badRequest('wrong.signature')
     }
 
     let user;
     try {
-      user = await web3Login.user(wallet);
+      user = await web3Login.user(lcWallet);
     } catch (e) {
       return ctx.badRequest('invalid.user')
     }
@@ -131,7 +132,7 @@ ${nonce.nonce}`;
     }
 
     try {
-      const nonce = await web3Login.createNonce(wallet);
+      const nonce = await web3Login.createNonce(wallet.toLowerCase());
       ctx.send({
         nonce,
       });
