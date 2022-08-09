@@ -16,7 +16,7 @@ module.exports = {
   async login(ctx) {
     const {web3Login} = strapi.plugins['web3-login'].services;
     const {user: userService, jwt: jwtService} = strapi.plugins['users-permissions'].services;
-    const {wallet, signature} = ctx.query;
+    const {wallet, signature} = ctx.request.body || {};
 
     const isEnabled = await web3Login.isEnabled();
 
@@ -27,6 +27,11 @@ module.exports = {
     if (_.isEmpty(wallet)) {
       return ctx.badRequest('wallet.invalid');
     }
+    const isAddress = ethers.utils.isAddress(wallet);
+    if (!isAddress) {
+      return ctx.badRequest('wrong.wallet');
+    }
+
     if (_.isEmpty(signature)) {
       return ctx.badRequest('signature.invalid');
     }
@@ -48,7 +53,28 @@ module.exports = {
     // deactivate nonce
     await web3Login.deactivateNonce(nonce);
 
-    // TODO: check signature
+    // Compose message
+    const message = `Welcome to InvestKratic!
+
+Please, sign this message to login, it will not cost any gas, we are not sending a blockchain transaction.
+    
+Wallet address:
+${wallet}
+    
+Nonce:
+${nonce.nonce}`;
+
+    let signerAddress = '';
+    try {
+      signerAddress = ethers.utils.verifyMessage(message, signature)
+    } catch (error) {
+      // no action, signerAddress will be empty, so, login failed anyway
+    }
+    console.log('signerAddress', signerAddress)
+    
+    if (wallet.toLowerCase() !== signerAddress.toLowerCase()) {
+      return ctx.badRequest('wrong.signature')
+    }
 
     let user;
     try {
@@ -66,7 +92,7 @@ module.exports = {
     }
 
     if (!user.confirmed) {
-      await userService.edit(user.id, {confirmed: true});
+      user = await userService.edit(user.id, {confirmed: true});
     }
     const userSchema = strapi.getModel('plugin::users-permissions.user');
     // Sanitize the template's user information
@@ -74,7 +100,7 @@ module.exports = {
 
     let context = {};
     /*
-    TODO: add save context un nonce creation, if it makes sense
+    TODO: add save context on nonce creation, if it makes sense
     try {
       context = JSON.parse(nonce.context);
     } catch (e) {

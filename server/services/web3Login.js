@@ -61,6 +61,15 @@ module.exports = (
         .create({data: newUser, populate: ['role']});
     },
 
+    async fetchUser(data) {
+      const userSchema = strapi.getModel('plugin::users-permissions.user');
+      const user =  await strapi.query('plugin::users-permissions.user').findOne({where: data, populate: ['role']})
+      if (!user) {
+        return user;
+      }
+      return await sanitize.sanitizers.defaultSanitizeOutput(userSchema, user);
+    },
+
     async user(wallet) {
       const settings = await this.settings();
       const user = await this.fetchUser({username: wallet});
@@ -118,15 +127,6 @@ module.exports = (
     async deactivateNonce(nonce) {
       await strapi.entityService.update('plugin::web3-login.nonce', nonce.id, {data: {active: false}});
     },
-
-    async fetchUser(data) {
-      const userSchema = strapi.getModel('plugin::users-permissions.user');
-      const user =  await strapi.query('plugin::users-permissions.user').findOne({where: data, populate: ['role']})
-      if (!user) {
-        return user;
-      }
-      return await sanitize.sanitizers.defaultSanitizeOutput(userSchema, user);
-    }
 
   };
 };
