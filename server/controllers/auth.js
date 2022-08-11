@@ -28,15 +28,15 @@ module.exports = {
       return ctx.badRequest('wallet.invalid');
     }
     const isAddress = ethers.utils.isAddress(wallet);
-    if (!isAddress) {
+    const checksummedAddress = ethers.utils.getAddress(wallet);
+    if (!isAddress || wallet !== checksummedAddress) {
       return ctx.badRequest('wrong.wallet');
     }
 
-    const lcWallet = wallet.toLowerCase();
     if (_.isEmpty(signature)) {
       return ctx.badRequest('signature.invalid');
     }
-    const nonce = await web3Login.fetchNonce(lcWallet);
+    const nonce = await web3Login.fetchNonce(wallet);
 
     if (!nonce || !nonce.active) {
       return ctx.badRequest('nonce.invalid');
@@ -55,13 +55,14 @@ module.exports = {
     await web3Login.deactivateNonce(nonce);
 
     // Compose message
+    // TODO: Allow to configure message on settings (two params: wallet & nonce)
     const message = `Welcome to InvestKratic!
 
 Please, sign this message to login, it will not cost any gas, we are not sending a blockchain transaction.
-    
+
 Wallet address:
 ${wallet}
-    
+
 Nonce:
 ${nonce.nonce}`;
 
@@ -71,15 +72,14 @@ ${nonce.nonce}`;
     } catch (error) {
       // no action, signerAddress will be empty, so, login failed anyway
     }
-    console.log('signerAddress', signerAddress)
     
-    if (lcWallet !== signerAddress.toLowerCase()) {
+    if (wallet !== signerAddress) {
       return ctx.badRequest('wrong.signature')
     }
 
     let user;
     try {
-      user = await web3Login.user(lcWallet);
+      user = await web3Login.user(wallet);
     } catch (e) {
       return ctx.badRequest('invalid.user')
     }
@@ -125,16 +125,19 @@ ${nonce.nonce}`;
       return ctx.badRequest('plugin.disabled');
     }
 
+    if (_.isEmpty(wallet)) {
+      return ctx.badRequest('wallet.invalid');
+    }
     const isAddress = ethers.utils.isAddress(wallet);
-
-    if (!wallet || !isAddress) {
+    const checksummedAddress = ethers.utils.getAddress(wallet);
+    if (!isAddress || wallet !== checksummedAddress) {
       return ctx.badRequest('wrong.wallet');
     }
 
     try {
-      const nonce = await web3Login.createNonce(wallet.toLowerCase());
+      const nonce = await web3Login.createNonce(wallet);
       ctx.send({
-        nonce,
+        nonce: nonce.nonce,
       });
     } catch (err) {
       return ctx.badRequest(err);
