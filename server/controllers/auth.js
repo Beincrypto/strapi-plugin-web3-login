@@ -1,11 +1,12 @@
 'use strict';
 /**
- * Auth.js controller
+ * auth.js controller
  *
  * @description: A set of functions called "actions" for managing `Auth`.
  */
 
 const {sanitize} = require('@strapi/utils');
+const {ethers} = require("ethers");
 
 /* eslint-disable no-useless-escape */
 const _ = require('lodash');
@@ -15,7 +16,7 @@ module.exports = {
   async login(ctx) {
     const {web3Login} = strapi.plugins['web3-login'].services;
     const {user: userService, jwt: jwtService} = strapi.plugins['users-permissions'].services;
-    const {wallet, signature} = ctx.query;
+    const {wallet, signature} = ctx.request.body || {};
 
     const isEnabled = await web3Login.isEnabled();
 
@@ -26,6 +27,12 @@ module.exports = {
     if (_.isEmpty(wallet)) {
       return ctx.badRequest('wallet.invalid');
     }
+    const isAddress = ethers.utils.isAddress(wallet);
+    const checksummedAddress = ethers.utils.getAddress(wallet);
+    if (!isAddress || wallet !== checksummedAddress) {
+      return ctx.badRequest('wrong.wallet');
+    }
+
     if (_.isEmpty(signature)) {
       return ctx.badRequest('signature.invalid');
     }
@@ -47,7 +54,28 @@ module.exports = {
     // deactivate nonce
     await web3Login.deactivateNonce(nonce);
 
-    // TODO: check signature
+    // Compose message
+    // TODO: Allow to configure message on settings (two params: wallet & nonce)
+    const message = `Welcome to InvestKratic!
+
+Please, sign this message to login, it will not cost any gas, we are not sending a blockchain transaction.
+
+Wallet address:
+${wallet}
+
+Nonce:
+${nonce.nonce}`;
+
+    let signerAddress = '';
+    try {
+      signerAddress = ethers.utils.verifyMessage(message, signature)
+    } catch (error) {
+      // no action, signerAddress will be empty, so, login failed anyway
+    }
+    
+    if (wallet !== signerAddress) {
+      return ctx.badRequest('wrong.signature')
+    }
 
     let user;
     try {
@@ -65,7 +93,7 @@ module.exports = {
     }
 
     if (!user.confirmed) {
-      await userService.edit(user.id, {confirmed: true});
+      user = await userService.edit(user.id, {confirmed: true});
     }
     const userSchema = strapi.getModel('plugin::users-permissions.user');
     // Sanitize the template's user information
@@ -73,7 +101,7 @@ module.exports = {
 
     let context = {};
     /*
-    TODO: add save context un nonce creation, if it makes sense
+    TODO: add save context on nonce creation, if it makes sense
     try {
       context = JSON.parse(nonce.context);
     } catch (e) {
@@ -89,7 +117,7 @@ module.exports = {
 
   async sendNonce(ctx) {
     const {web3Login} = strapi.plugins['web3-login'].services;
-    const {wallet} = ctx.query;
+    const {wallet} = ctx.params;
 
     const isEnabled = await web3Login.isEnabled();
 
@@ -97,16 +125,19 @@ module.exports = {
       return ctx.badRequest('plugin.disabled');
     }
 
-    const isAddress = true; // TODO ethers
-
-    if (!wallet || !isAddress) {
+    if (_.isEmpty(wallet)) {
+      return ctx.badRequest('wallet.invalid');
+    }
+    const isAddress = ethers.utils.isAddress(wallet);
+    const checksummedAddress = ethers.utils.getAddress(wallet);
+    if (!isAddress || wallet !== checksummedAddress) {
       return ctx.badRequest('wrong.wallet');
     }
 
     try {
       const nonce = await web3Login.createNonce(wallet);
       ctx.send({
-        nonce,
+        nonce: nonce.nonce,
       });
     } catch (err) {
       return ctx.badRequest(err);

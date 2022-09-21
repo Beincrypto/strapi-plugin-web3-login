@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-web3-login",
-  "version": "4.0.0",
+  "version": "4.0.3",
   "description": "A plugin for Strapi Headless CMS that provides ability to sign-in/sign-up to an application signing a message with your web3 wallet.",
   "strapi": {
     "displayName": "Web3 Login",
@@ -16,12 +16,12 @@
     "login",
     "authentification"
   ],
-  "author": "Jose F. Fernandez - BeInCrypto",
+  "author": "Jose F. Fernandez",
   "engines": {
-    "node": ">=10.16.0",
+    "node": ">=16.0.0",
     "npm": ">=6.0.0"
   },
-  "homepage": "https://github.com/Beincrypto/strapi-plugin-web3-login",
+  "homepage": "https://github.com/jffernandez/strapi-plugin-web3-login",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.5.1"
@@ -33,6 +33,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "nanoid": "^3.3.4"
+    "nanoid": "^3.3.4",
+    "ethers": "^5.6.8"
   }
 }
