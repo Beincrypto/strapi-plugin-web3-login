@@ -7,6 +7,8 @@
   "Settings.expirePeriod.description": "Nonce expire period in seconds.",
   "Settings.enabled.label": "Enable Web3 Login plugin",
   "Settings.expirePeriod.label": "Nonce validity period (seconds, min. 30)",
+  "Settings.message.label": "Message",
+  "Settings.message.description": "Message to sign, use _{wallet} and _{nonce} as placeholders.",
   "Warning.button.cancel": "Cancel",
   "Warning.button.confirm": "Confirm",
   "Warning.title": "Please confirm",

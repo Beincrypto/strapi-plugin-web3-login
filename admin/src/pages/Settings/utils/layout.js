@@ -50,6 +50,22 @@ const layout = [
       xs: 6,
     },
   },
+  {
+    intlLabel: {
+      id: getTrad('Settings.message.label'),
+      defaultMessage: 'Settings.message.label',
+    },
+    description: {
+      id: getTrad('Settings.message.description'),
+      defaultMessage: "Settings.message.description",
+    },
+    name: 'message',
+    type: 'text',
+    size: {
+      col: 6,
+      xs: 6,
+    },
+  },
 ];
 
 export default layout;
