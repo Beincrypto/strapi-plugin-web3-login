@@ -24,8 +24,7 @@ const layout = [
     },
     description: {
       id: getTrad('Settings.createUser.description'),
-      defaultMessage:
-        'Settings.createUser.description',
+      defaultMessage: 'Settings.createUser.description',
     },
     name: 'createUserIfNotExists',
     type: 'bool',
@@ -60,7 +59,7 @@ const layout = [
       defaultMessage: "Settings.message.description",
     },
     name: 'message',
-    type: 'text',
+    type: 'textarea',
     size: {
       col: 6,
       xs: 6,

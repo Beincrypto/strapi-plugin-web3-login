@@ -55,7 +55,7 @@ Wallet address:
 _{wallet}
       
 Nonce:
-_{nonce.nonce}`,
+_{nonce}`,
     };
 
     await pluginStore.set({key: 'settings', value});
