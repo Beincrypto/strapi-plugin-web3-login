@@ -50,21 +50,17 @@ The **Web3 Login** plugin should appear in the **Plugins** section of Strapi sid
 #### Get nonce for signing with message
 
 ```bash
-POST /api/web3-login/nonce
-{
-  "wallet": "0x00000000000000000000" // wallet address for the user
-}
+GET /api/web3-login/nonce/:wallet
 ```
+
 
 #### Login with wallet signature
 
 ```bash
-GET /api/web3-login/login?wallet={wallet}&signature={signature}
+POST /api/web3-login/login
 {
-  "jwt":  "...jwt auth token..."
-  "user": {
-    ...strapi user...
-  }
+  "wallet":  "0x0...",
+  "signature": "0x0..."
 }
 ```
 

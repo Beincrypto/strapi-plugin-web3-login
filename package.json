@@ -21,7 +21,7 @@
     "node": ">=16.0.0",
     "npm": ">=6.0.0"
   },
-  "homepage": "https://github.com/jffernandez/strapi-plugin-web3-login",
+  "homepage": "https://github.com/Beincrypto/strapi-plugin-web3-login",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.5.1"
