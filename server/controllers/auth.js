@@ -17,8 +17,8 @@ module.exports = {
     const {web3Login} = strapi.plugins['web3-login'].services;
     const {user: userService, jwt: jwtService} = strapi.plugins['users-permissions'].services;
     const {wallet, signature} = ctx.request.body || {};
-
     const isEnabled = await web3Login.isEnabled();
+    const settings = await web3Login.settings();
 
     if (!isEnabled) {
       return ctx.badRequest('plugin.disabled');
@@ -55,17 +55,7 @@ module.exports = {
     await web3Login.deactivateNonce(nonce);
 
     // Compose message
-    // TODO: Allow to configure message on settings (two params: wallet & nonce)
-    const message = `Welcome to InvestKratic!
-
-Please, sign this message to login, it will not cost any gas, we are not sending a blockchain transaction.
-
-Wallet address:
-${wallet}
-
-Nonce:
-${nonce.nonce}`;
-
+    let message = settings.message.replace('_{wallet}', wallet).replace('_{nonce}', nonce.nonce);
     let signerAddress = '';
     try {
       signerAddress = ethers.utils.verifyMessage(message, signature)

@@ -24,8 +24,7 @@ const layout = [
     },
     description: {
       id: getTrad('Settings.createUser.description'),
-      defaultMessage:
-        'Settings.createUser.description',
+      defaultMessage: 'Settings.createUser.description',
     },
     name: 'createUserIfNotExists',
     type: 'bool',
@@ -45,6 +44,22 @@ const layout = [
     },
     name: 'expirePeriod',
     type: 'number',
+    size: {
+      col: 6,
+      xs: 6,
+    },
+  },
+  {
+    intlLabel: {
+      id: getTrad('Settings.message.label'),
+      defaultMessage: 'Settings.message.label',
+    },
+    description: {
+      id: getTrad('Settings.message.description'),
+      defaultMessage: "Settings.message.description",
+    },
+    name: 'message',
+    type: 'textarea',
     size: {
       col: 6,
       xs: 6,

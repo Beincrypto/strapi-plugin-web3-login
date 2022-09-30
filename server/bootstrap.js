@@ -47,6 +47,15 @@ module.exports = async (
       enabled: true,
       createUserIfNotExists: true,
       expirePeriod: 30,
+      message: `Welcome to this fancy App!
+
+Please, sign this message to login, it will not cost any gas, we are not sending a blockchain transaction.
+      
+Wallet address:
+_{wallet}
+      
+Nonce:
+_{nonce}`,
     };
 
     await pluginStore.set({key: 'settings', value});
