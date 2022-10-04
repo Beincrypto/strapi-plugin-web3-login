@@ -118,9 +118,13 @@ module.exports = {
     if (_.isEmpty(wallet)) {
       return ctx.badRequest('wallet.invalid');
     }
-    const isAddress = ethers.utils.isAddress(wallet);
-    const checksummedAddress = ethers.utils.getAddress(wallet);
-    if (!isAddress || wallet !== checksummedAddress) {
+    try {
+      const isAddress = ethers.utils.isAddress(wallet);
+      const checksummedAddress = ethers.utils.getAddress(wallet);
+      if (!isAddress || wallet !== checksummedAddress) {
+        return ctx.badRequest('wrong.wallet');
+      }
+    } catch (err) {
       return ctx.badRequest('wrong.wallet');
     }
 
