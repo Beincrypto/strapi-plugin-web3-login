@@ -53,6 +53,13 @@ The **Web3 Login** plugin should appear in the **Plugins** section of Strapi sid
 GET /api/web3-login/nonce/:wallet
 ```
 
+Response:
+
+```json
+{
+    "nonce": "_eUM5f71AIEm2W8HF3l2B"
+}
+```
 
 #### Login with wallet signature
 
@@ -61,6 +68,33 @@ POST /api/web3-login/login
 {
   "wallet":  "0x0...",
   "signature": "0x0..."
+}
+```
+
+Response:
+
+```json
+{
+  "jwt": "eyJ...",
+  "user": {
+      "id": 1,
+      "username": "0x0...",
+      "email": "",
+      "provider": null,
+      "confirmed": true,
+      "blocked": false,
+      "createdAt": "2022-09-30T19:52:11.050Z",
+      "updatedAt": "2022-09-30T19:52:11.054Z",
+      "role": {
+          "id": 1,
+          "name": "Authenticated",
+          "description": "Default role given to authenticated user.",
+          "type": "authenticated",
+          "createdAt": "2022-07-22T15:22:30.155Z",
+          "updatedAt": "2022-07-22T15:22:30.155Z"
+      }
+  },
+  "context": {}
 }
 ```
 
