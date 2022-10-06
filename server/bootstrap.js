@@ -7,8 +7,6 @@
  * This gives you an opportunity to set up your data model,
  * run jobs, or perform some special logic.
  */
-const {getAbsoluteServerUrl} = require('@strapi/utils');
-
 const web3LoginActions = {
   actions: [
     {
