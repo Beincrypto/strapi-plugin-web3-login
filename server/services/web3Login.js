@@ -47,37 +47,44 @@ module.exports = (
 
     async createUser(wallet) {
       const userSettings = await this.userSettings();
-      const role = await strapi
-        .query('plugin::users-permissions.role')
-        .findOne({type: userSettings.default_role}, []);
+      const role = (await strapi.entityService.findMany('plugin::users-permissions.role', {
+        filters: {
+          type: userSettings.default_role
+        }
+      }))[0];
 
       const newUser = {
         email: '',
         username: wallet,
         role: {id: role.id}
       };
+
       return strapi
         .query('plugin::users-permissions.user')
         .create({data: newUser, populate: ['role']});
     },
 
     async fetchUser(data) {
-      const userSchema = strapi.getModel('plugin::users-permissions.user');
-      const user =  await strapi.query('plugin::users-permissions.user').findOne({where: data, populate: ['role']})
-      if (!user) {
-        return user;
+      let user;
+      const found = await strapi.entityService.findMany('plugin::users-permissions.user', {
+        filters: data,
+        populate: ['role']
+      });
+      if (found.length === 1) {
+        const userSchema = strapi.getModel('plugin::users-permissions.user');
+        user = await sanitize.sanitizers.defaultSanitizeOutput(userSchema, found[0]);
       }
-      return await sanitize.sanitizers.defaultSanitizeOutput(userSchema, user);
+      return user;
     },
 
     async user(wallet) {
-      const settings = await this.settings();
       const user = await this.fetchUser({username: wallet});
       if (user) {
         return user;
       }
+      const settings = await this.settings();
       if (settings.createUserIfNotExists) {
-        return this.createUser(wallet)
+        return this.createUser(wallet);
       }
       return false;
     },
@@ -88,7 +95,7 @@ module.exports = (
       const nonceToken = nanoid();
 
       let nonce;
-      let found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
+      const found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
       if (found.length === 1) {
         const nonceData = {
           nonce: nonceToken,
@@ -110,7 +117,7 @@ module.exports = (
 
     async fetchNonce(wallet) {
       let nonce;
-      let found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
+      const found = await strapi.entityService.findMany('plugin::web3-login.nonce', {filters: {wallet}});
       if (found.length === 1) {
         nonce = found[0];
       }
