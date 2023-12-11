@@ -1,1 +1,19 @@
-{}
+{
+  "Header.Settings": "Plugin de inicio de sesión Web3",
+  "Form.title.Settings": "Configuración",
+  "Settings.enabled.description": "Permite una autenticación web3 segura y fluida.",
+  "Settings.createUser.description": "Crear un nuevo usuario para la dirección de la billetera si no existe.",
+  "Settings.createUser.label": "Crear nuevo usuario",
+  "Settings.userConfirmed.description": "Marcar al usuario como Confirmado.",
+  "Settings.userConfirmed.label": "Usuario confirmado",
+  "Settings.expirePeriod.description": "Periodo de vencimiento en segundos.",
+  "Settings.enabled.label": "Habilitar plugin de inicio de sesión Web3",
+  "Settings.expirePeriod.label": "Validez nonce (segundos, mín. 30)",
+  "Settings.message.label": "Mensaje",
+  "Settings.message.description": "Mensaje para firmar, usar marcadores de posición para billetera y nonce (ver documentación).",
+  "Warning.button.cancel": "Cancelar",
+  "Warning.button.confirm": "Confirmar",
+  "Warning.title": "Por favor confirme",
+  "Warning.warning.cancel": "¿Estás seguro de que deseas cancelar tus modificaciones?",
+  "notification.success.submit": "La configuración ha sido actualizada"  
+}
