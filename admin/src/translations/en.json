@@ -4,6 +4,8 @@
   "Settings.enabled.description": "Enables a secure and seamless web3 authentication.",
   "Settings.createUser.description": "Create new user for wallet address if it doesn't exist.",
   "Settings.createUser.label": "Create new user",
+  "Settings.userConfirmed.description": "Mark the user as Confirmed.",
+  "Settings.userConfirmed.label": "User confirmed",
   "Settings.expirePeriod.description": "Nonce expire period in seconds.",
   "Settings.enabled.label": "Enable Web3 Login plugin",
   "Settings.expirePeriod.label": "Nonce validity period (seconds, min. 30)",
