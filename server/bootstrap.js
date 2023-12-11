@@ -44,6 +44,7 @@ module.exports = async (
     const value = {
       enabled: true,
       createUserIfNotExists: true,
+      userConfirmed: true,
       expirePeriod: 30,
       message: `Welcome to this fancy App!
 

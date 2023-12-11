@@ -20,7 +20,6 @@ module.exports = {
     const isEnabled = await web3Login.isEnabled();
     const settings = await web3Login.settings();
 
-    console.log('--- Login')
     if (!isEnabled) {
       return ctx.badRequest('plugin.disabled');
     }
@@ -34,13 +33,11 @@ module.exports = {
       return ctx.badRequest('wrong.wallet');
     }
 
-    console.log(`Wallet: ${wallet}`)
     if (_.isEmpty(signature)) {
       return ctx.badRequest('signature.invalid');
     }
     const nonce = await web3Login.fetchNonce(wallet);
 
-    console.log(`Nonce: ${nonce.nonce}`)
     if (!nonce || !nonce.active) {
       return ctx.badRequest('nonce.invalid');
     }
@@ -60,14 +57,12 @@ module.exports = {
     // Compose message
     let message = settings.message.replace('_{wallet}', wallet).replace('_{nonce}', nonce.nonce);
     let signerAddress = '';
-    console.log(`Message: ${message}`)
     try {
       signerAddress = ethers.utils.verifyMessage(message, signature)
     } catch (error) {
       // no action, signerAddress will be empty, so, login failed anyway
     }
     
-    console.log(`SignerAddress: ${signerAddress}`)
     if (wallet !== signerAddress) {
       return ctx.badRequest('wrong.signature')
     }
@@ -83,12 +78,11 @@ module.exports = {
       return ctx.badRequest('wrong.user');
     }
 
-    console.log(`User: ${user.id}`)
     if (user.blocked) {
       return ctx.badRequest('blocked.user');
     }
 
-    if (!user.confirmed) {
+    if (settings.userConfirmed && !user.confirmed) {
       user = await userService.edit(user.id, {confirmed: true});
     }
     const userSchema = strapi.getModel('plugin::users-permissions.user');
