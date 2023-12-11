@@ -35,6 +35,22 @@ const layout = [
   },
   {
     intlLabel: {
+      id: getTrad('Settings.userConfirmed.label'),
+      defaultMessage: 'Settings.userConfirmed.label',
+    },
+    description: {
+      id: getTrad('Settings.userConfirmed.description'),
+      defaultMessage: 'Settings.userConfirmed.description',
+    },
+    name: 'userConfirmed',
+    type: 'bool',
+    size: {
+      col: 6,
+      xs: 6,
+    },
+  },
+  {
+    intlLabel: {
       id: getTrad('Settings.expirePeriod.label'),
       defaultMessage: 'Settings.expirePeriod.label',
     },
